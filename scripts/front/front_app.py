@@ -5,9 +5,11 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     return render_template('index.html')
-@app.route('/tables')
-def tables():
-    return render_template('tables.html')
+@app.route('/tables/<int:day>')
+def tables(day):
+    if day not in [1, 2, 3, 4]:
+        return 'Такого дня нет', 404
+    return render_template('tables.html', day=day)
 
 @app.route('/pdf')
 def pdf_view():
