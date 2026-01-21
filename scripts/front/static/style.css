@@ -76,3 +76,74 @@ button {
 button:hover {
     background: #40739e;
 }
+
+
+.actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.pdf-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #273c75;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.pdf-button:hover {
+    background: #40739e;
+}
+
+.pdf-placeholder {
+    background: white;
+    padding: 40px;
+    text-align: center;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.pdf-download {
+    margin-top: 20px;
+    padding: 12px 25px;
+    background: #273c75;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.pdf-download:hover {
+    background: #40739e;
+}
+
+
+.days {
+    display: flex;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.day-card{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 150px;
+    height: 100px;
+    background: #273c75;
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px
+rgba(0,0,0,0.15);
+}
+
+.day-card:hover {
+    background: #40739e;
+}

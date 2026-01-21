@@ -3,10 +3,18 @@
 {% block title %}Таблицы{% endblock %}
 
 {% block content %}
-<h1>Таблицы</h1>
+<h1>Таблицы - день {{ day }}</h1>
 
 <div class="table-placeholder">
-    <p>Здесь будут таблицы 📊</p>
-    <button>Добавить таблицу</button>
+    <p> Таблицы для дня {{ day }}</p>
+
+    <br>
+
+
+    <div class="actions">
+        <a href="/pdf" class="pdf-button">
+            Перейти к PDF
+        </a>
+    </div>
 </div>
 {% endblock %}
