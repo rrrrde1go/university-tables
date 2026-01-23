@@ -43,6 +43,7 @@ remove_percent = 0.07
 students_list = []
 id_counter = 0
 
+
 # Все 4 направления==============================================================
 required_amount = intersections_4[0]
 for i in range(id_counter, id_counter+required_amount):
@@ -72,65 +73,65 @@ id_counter = students_list[-1].id + 1
 
 # 2 направления================================================================================
 required_amount = intersections_2['PM-IVT'][0] - intersections_3['PM-IVT-IB'][0] -\
-    intersections_3['PM-IVT-ITSS'][0] - intersections_4[0]
+    intersections_3['PM-IVT-ITSS'][0] + intersections_4[0]
 for i in range(id_counter, id_counter+required_amount):
     students_list.append(Student(i, [0, 1]))
 id_counter = students_list[-1].id + 1
 
 required_amount = intersections_2['PM-ITSS'][0] - intersections_3['PM-ITSS-IB'][0] -\
-    intersections_3['PM-IVT-ITSS'][0] - intersections_4[0]
+    intersections_3['PM-IVT-ITSS'][0] + intersections_4[0]
 for i in range(id_counter, id_counter+required_amount):
     students_list.append(Student(i, [0, 2]))
 id_counter = students_list[-1].id + 1
 
 required_amount = intersections_2['PM-IB'][0] - intersections_3['PM-IVT-IB'][0] -\
-    intersections_3['PM-ITSS-IB'][0] - intersections_4[0]
+    intersections_3['PM-ITSS-IB'][0] + intersections_4[0]
 for i in range(id_counter, id_counter+required_amount):
     students_list.append(Student(i, [0, 3]))
 id_counter = students_list[-1].id + 1
 
 required_amount = intersections_2['IVT-IB'][0] - intersections_3['PM-IVT-IB'][0] -\
-    intersections_3['IVT-ITSS-IB'][0] - intersections_4[0]
+    intersections_3['IVT-ITSS-IB'][0] + intersections_4[0]
 for i in range(id_counter, id_counter+required_amount):
     students_list.append(Student(i, [1, 3]))
 id_counter = students_list[-1].id + 1
 
 required_amount = intersections_2['IVT-ITSS'][0] - intersections_3['IVT-ITSS-IB'][0] -\
-    intersections_3['PM-IVT-ITSS'][0] - intersections_4[0]
+    intersections_3['PM-IVT-ITSS'][0] + intersections_4[0]
 for i in range(id_counter, id_counter+required_amount):
     students_list.append(Student(i, [0, 1]))
 id_counter = students_list[-1].id + 1
 
 required_amount = intersections_2['ITSS-IB'][0] - intersections_3['PM-ITSS-IB'][0] -\
-    intersections_3['IVT-ITSS-IB'][0] - intersections_4[0]
+    intersections_3['IVT-ITSS-IB'][0] + intersections_4[0]
 for i in range(id_counter, id_counter+required_amount):
     students_list.append(Student(i, [0, 1]))
 id_counter = students_list[-1].id + 1
 
 # 1 направление================================================================================
 required_amount = total_amount['PM'][0] - intersections_2['PM-ITSS'][0] - intersections_2['PM-IVT'][0] -\
-    intersections_2['PM-IB'][0] - intersections_3['PM-ITSS-IB'][0] - intersections_3['PM-IVT-IB'][0] -\
+    intersections_2['PM-IB'][0] + intersections_3['PM-ITSS-IB'][0] + intersections_3['PM-IVT-IB'][0] +\
     intersections_3['PM-IVT-ITSS'][0] - intersections_4[0]
 for i in range(id_counter, id_counter+required_amount):
     students_list.append(Student(i, [0]))
 id_counter = students_list[-1].id + 1
 
 required_amount = total_amount['IB'][0] - intersections_2['PM-IB'][0] - intersections_2['ITSS-IB'][0] -\
-    intersections_2['IVT-IB'][0] - intersections_3['PM-ITSS-IB'][0] - intersections_3['PM-IVT-IB'][0] -\
+    intersections_2['IVT-IB'][0] + intersections_3['PM-ITSS-IB'][0] + intersections_3['PM-IVT-IB'][0] +\
     intersections_3['IVT-ITSS-IB'][0] - intersections_4[0]
 for i in range(id_counter, id_counter+required_amount):
     students_list.append(Student(i, [3]))
 id_counter = students_list[-1].id + 1
 
 required_amount = total_amount['ITSS'][0] - intersections_2['PM-ITSS'][0] - intersections_2['ITSS-IB'][0] -\
-    intersections_2['IVT-ITSS'][0] - intersections_3['PM-ITSS-IB'][0] - intersections_3['IVT-ITSS-IB'][0] -\
+    intersections_2['IVT-ITSS'][0] + intersections_3['PM-ITSS-IB'][0] + intersections_3['IVT-ITSS-IB'][0] +\
     intersections_3['PM-IVT-ITSS'][0] - intersections_4[0]
 for i in range(id_counter, id_counter+required_amount):
     students_list.append(Student(i, [2]))
 id_counter = students_list[-1].id + 1
 
 required_amount = total_amount['IVT'][0] - intersections_2['IVT-ITSS'][0] - intersections_2['PM-IVT'][0] -\
-    intersections_2['IVT-IB'][0] - intersections_3['IVT-ITSS-IB'][0] - intersections_3['PM-IVT-IB'][0] -\
+    intersections_2['IVT-IB'][0] + intersections_3['IVT-ITSS-IB'][0] + intersections_3['PM-IVT-IB'][0] +\
     intersections_3['PM-IVT-ITSS'][0] - intersections_4[0]
 for i in range(id_counter, id_counter+required_amount):
     students_list.append(Student(i, [1]))
@@ -150,7 +151,8 @@ for i in range(len(students_list)):
         if j in students_list[i].priority:
             current_student_df.iat[0, 2] = students_list[i].priority.index(j) + 1
             tables[j] = pd.concat([tables[j], current_student_df])
-# TODO Пофиксить общее количество поступивших
+# TODO Пофиксить общее количество поступивших на каждое направление
+
 
 tables[0].to_excel('../tables/pm1.xlsx')
 tables[1].to_excel('../tables/ivt1.xlsx')
