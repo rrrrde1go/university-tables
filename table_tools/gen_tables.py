@@ -99,13 +99,13 @@ id_counter = students_list[-1].id + 1
 required_amount = intersections_2['IVT-ITSS'][0] - intersections_3['IVT-ITSS-IB'][0] -\
     intersections_3['PM-IVT-ITSS'][0] + intersections_4[0]
 for i in range(id_counter, id_counter+required_amount):
-    students_list.append(Student(i, [0, 1]))
+    students_list.append(Student(i, [1, 2]))
 id_counter = students_list[-1].id + 1
 
 required_amount = intersections_2['ITSS-IB'][0] - intersections_3['PM-ITSS-IB'][0] -\
     intersections_3['IVT-ITSS-IB'][0] + intersections_4[0]
 for i in range(id_counter, id_counter+required_amount):
-    students_list.append(Student(i, [0, 1]))
+    students_list.append(Student(i, [2, 3]))
 id_counter = students_list[-1].id + 1
 
 # 1 направление================================================================================
