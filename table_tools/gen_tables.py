@@ -9,7 +9,7 @@ class Student:
         self.id = uid
         self.agreement: bool = bool(random.randint(0, 1))
         random.shuffle(priority_template)
-        # Приоритет [0] - первый приоритет; [1] - второй приоритет и т. д.
+        # Приоритет [0] - первый приоритет; [1] - второй приоритет и т.д.
         self.priority = priority_template
         # Баллы [0] - Физика; [1] - Русский; [2] - Математика; [3] - индивидуальные достижения
         self.scores = [random.randint(50, 100) for _ in range(3)] + [random.randint(0, 10)]
@@ -43,6 +43,20 @@ students_list = []
 # Генерация списков для 4 дней
 # ======================================================================================================================
 
+def change_students_list(required_amount: int, existing_amount: int, index_counter: int,
+                         id_counter: int, priority_template):
+    # Переназначение приоритетов у уже имеющихся абитуриентов
+    required_amount_temp = min(required_amount, existing_amount-index_counter) # Количество абитуриентов, которое можно взять из уже существующих
+    for i in range(required_amount_temp):
+        tmp = priority_template
+        random.shuffle(tmp)
+        students_list[i+index_counter].priority = tmp
+    index_counter += required_amount_temp
+    required_amount -= required_amount_temp
+    # Создание новых недостающих абитуриентов
+    for i in range(id_counter, id_counter + required_amount):
+        students_list.append(Student(i, priority_template))
+
 def create_tables_for_day(day_ind: int, id_counter_start: int):
     # Удаление абитуриентов в зависимости от remove_percent
     if day_ind != 0:
@@ -55,205 +69,128 @@ def create_tables_for_day(day_ind: int, id_counter_start: int):
     index_counter = 0
 
     # Все 4 направления==============================================================
-    # Вычисление нужного количества абитериентов
+    # Вычисление нужного количества абитуриентов
     required_amount = intersections_4[day_ind]
-    # Переназначение приоритетов у уже имеющихся абитуриентов
-    required_amount_temp = min(required_amount, existing_amount-index_counter) # Количество абитуриентов, которое можно взять из уже существующих
-    for i in range(required_amount_temp):
-        tmp = [0, 1, 2, 3]
-        random.shuffle(tmp)
-        students_list[i+index_counter].priority = tmp
+    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [0, 1, 2, 3])
+    required_amount_temp = min(required_amount, existing_amount-index_counter)
     index_counter += required_amount_temp
     required_amount -= required_amount_temp
-    # Создание новых недостоющих абитуриентов
-    for i in range(id_counter, id_counter + required_amount):
-        students_list.append(Student(i, [0, 1, 2, 3]))
     id_counter = students_list[-1].id + 1
 
     # 3 направления==================================================================
     required_amount = intersections_3['PM-IVT-IB'][day_ind] - intersections_4[day_ind]
-    required_amount_temp = min(required_amount, existing_amount - index_counter)
-    for i in range(required_amount_temp):
-        tmp = [0, 1, 3]
-        random.shuffle(tmp)
-        students_list[i+index_counter].priority = tmp
+    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [0, 1, 3])
+    required_amount_temp = min(required_amount, existing_amount-index_counter)
     index_counter += required_amount_temp
     required_amount -= required_amount_temp
-    for i in range(id_counter, id_counter + required_amount):
-        students_list.append(Student(i, [0, 1, 3]))
     id_counter = students_list[-1].id + 1
 
     required_amount = intersections_3['PM-ITSS-IB'][day_ind] - intersections_4[day_ind]
-    required_amount_temp = min(required_amount, existing_amount - index_counter)
-    for i in range(required_amount_temp):
-        tmp = [0, 2, 3]
-        random.shuffle(tmp)
-        students_list[i+index_counter].priority = tmp
+    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [0, 2, 3])
+    required_amount_temp = min(required_amount, existing_amount-index_counter)
     index_counter += required_amount_temp
     required_amount -= required_amount_temp
-    for i in range(id_counter, id_counter + required_amount):
-        students_list.append(Student(i, [0, 2, 3]))
     id_counter = students_list[-1].id + 1
 
     required_amount = intersections_3['PM-IVT-ITSS'][day_ind] - intersections_4[day_ind]
-    required_amount_temp = min(required_amount, existing_amount - index_counter)
-    for i in range(required_amount_temp):
-        tmp = [0, 1, 2]
-        random.shuffle(tmp)
-        students_list[i+index_counter].priority = tmp
+    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [0, 1, 2])
+    required_amount_temp = min(required_amount, existing_amount-index_counter)
     index_counter += required_amount_temp
     required_amount -= required_amount_temp
-    for i in range(id_counter, id_counter + required_amount):
-        students_list.append(Student(i, [0, 1, 2]))
     id_counter = students_list[-1].id + 1
 
     required_amount = intersections_3['IVT-ITSS-IB'][day_ind] - intersections_4[day_ind]
-    required_amount_temp = min(required_amount, existing_amount - index_counter)
-    for i in range(required_amount_temp):
-        tmp = [1, 2, 3]
-        random.shuffle(tmp)
-        students_list[i+index_counter].priority = tmp
+    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [1, 2, 3])
+    required_amount_temp = min(required_amount, existing_amount-index_counter)
     index_counter += required_amount_temp
     required_amount -= required_amount_temp
-    for i in range(id_counter, id_counter + required_amount):
-        students_list.append(Student(i, [1, 2, 3]))
     id_counter = students_list[-1].id + 1
 
     # 2 направления================================================================================
     required_amount = intersections_2['PM-IVT'][day_ind] - intersections_3['PM-IVT-IB'][day_ind] - \
                       intersections_3['PM-IVT-ITSS'][day_ind] + intersections_4[day_ind]
-    required_amount_temp = min(required_amount, existing_amount - index_counter)
-    for i in range(required_amount_temp):
-        tmp = [0, 1]
-        random.shuffle(tmp)
-        students_list[i+index_counter].priority = tmp
+    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [0, 1])
+    required_amount_temp = min(required_amount, existing_amount-index_counter)
     index_counter += required_amount_temp
     required_amount -= required_amount_temp
-    for i in range(id_counter, id_counter + required_amount):
-        students_list.append(Student(i, [0, 1]))
     id_counter = students_list[-1].id + 1
 
     required_amount = intersections_2['PM-ITSS'][day_ind] - intersections_3['PM-ITSS-IB'][day_ind] - \
                       intersections_3['PM-IVT-ITSS'][day_ind] + intersections_4[day_ind]
-    required_amount_temp = min(required_amount, existing_amount - index_counter)
-    for i in range(required_amount_temp):
-        tmp = [0, 2]
-        random.shuffle(tmp)
-        students_list[i+index_counter].priority = tmp
+    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [0, 2])
+    required_amount_temp = min(required_amount, existing_amount-index_counter)
     index_counter += required_amount_temp
     required_amount -= required_amount_temp
-    for i in range(id_counter, id_counter + required_amount):
-        students_list.append(Student(i, [0, 2]))
     id_counter = students_list[-1].id + 1
 
     required_amount = intersections_2['PM-IB'][day_ind] - intersections_3['PM-IVT-IB'][day_ind] - \
                       intersections_3['PM-ITSS-IB'][day_ind] + intersections_4[day_ind]
-    required_amount_temp = min(required_amount, existing_amount - index_counter)
-    for i in range(required_amount_temp):
-        tmp = [0, 3]
-        random.shuffle(tmp)
-        students_list[i+index_counter].priority = tmp
+    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [0, 3])
+    required_amount_temp = min(required_amount, existing_amount-index_counter)
     index_counter += required_amount_temp
     required_amount -= required_amount_temp
-    for i in range(id_counter, id_counter + required_amount):
-        students_list.append(Student(i, [0, 3]))
     id_counter = students_list[-1].id + 1
 
     required_amount = intersections_2['IVT-IB'][day_ind] - intersections_3['PM-IVT-IB'][day_ind] - \
                       intersections_3['IVT-ITSS-IB'][day_ind] + intersections_4[day_ind]
-    required_amount_temp = min(required_amount, existing_amount - index_counter)
-    for i in range(required_amount_temp):
-        tmp = [1, 3]
-        random.shuffle(tmp)
-        students_list[i+index_counter].priority = tmp
+    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [1, 3])
+    required_amount_temp = min(required_amount, existing_amount-index_counter)
     index_counter += required_amount_temp
     required_amount -= required_amount_temp
-    for i in range(id_counter, id_counter + required_amount):
-        students_list.append(Student(i, [1, 3]))
     id_counter = students_list[-1].id + 1
 
     required_amount = intersections_2['IVT-ITSS'][day_ind] - intersections_3['IVT-ITSS-IB'][day_ind] - \
                       intersections_3['PM-IVT-ITSS'][day_ind] + intersections_4[day_ind]
-    required_amount_temp = min(required_amount, existing_amount - index_counter)
-    for i in range(required_amount_temp):
-        tmp = [1, 2]
-        random.shuffle(tmp)
-        students_list[i+index_counter].priority = tmp
+    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [1, 2])
+    required_amount_temp = min(required_amount, existing_amount-index_counter)
     index_counter += required_amount_temp
     required_amount -= required_amount_temp
-    for i in range(id_counter, id_counter + required_amount):
-        students_list.append(Student(i, [1, 2]))
     id_counter = students_list[-1].id + 1
 
     required_amount = intersections_2['ITSS-IB'][day_ind] - intersections_3['PM-ITSS-IB'][day_ind] - \
                       intersections_3['IVT-ITSS-IB'][day_ind] + intersections_4[day_ind]
-    required_amount_temp = min(required_amount, existing_amount - index_counter)
-    for i in range(required_amount_temp):
-        tmp = [2, 3]
-        random.shuffle(tmp)
-        students_list[i+index_counter].priority = tmp
+    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [2, 3])
+    required_amount_temp = min(required_amount, existing_amount-index_counter)
     index_counter += required_amount_temp
     required_amount -= required_amount_temp
-    for i in range(id_counter, id_counter + required_amount):
-        students_list.append(Student(i, [2, 3]))
     id_counter = students_list[-1].id + 1
 
     # 1 направление================================================================================
     required_amount = total_amount['PM'][day_ind] - intersections_2['PM-ITSS'][day_ind] - intersections_2['PM-IVT'][day_ind] - \
                       intersections_2['PM-IB'][day_ind] + intersections_3['PM-ITSS-IB'][day_ind] + intersections_3['PM-IVT-IB'][day_ind] + \
                       intersections_3['PM-IVT-ITSS'][day_ind] - intersections_4[day_ind]
-    required_amount_temp = min(required_amount, existing_amount - index_counter)
-    for i in range(required_amount_temp):
-        tmp = [0]
-        random.shuffle(tmp)
-        students_list[i+index_counter].priority = tmp
+    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [0])
+    required_amount_temp = min(required_amount, existing_amount-index_counter)
     index_counter += required_amount_temp
     required_amount -= required_amount_temp
-    for i in range(id_counter, id_counter + required_amount):
-        students_list.append(Student(i, [0]))
     id_counter = students_list[-1].id + 1
 
     required_amount = total_amount['IB'][day_ind] - intersections_2['PM-IB'][day_ind] - intersections_2['ITSS-IB'][day_ind] - \
                       intersections_2['IVT-IB'][day_ind] + intersections_3['PM-ITSS-IB'][day_ind] + intersections_3['PM-IVT-IB'][day_ind] + \
                       intersections_3['IVT-ITSS-IB'][day_ind] - intersections_4[day_ind]
-    required_amount_temp = min(required_amount, existing_amount - index_counter)
-    for i in range(required_amount_temp):
-        tmp = [3]
-        random.shuffle(tmp)
-        students_list[i+index_counter].priority = tmp
+    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [3])
+    required_amount_temp = min(required_amount, existing_amount-index_counter)
     index_counter += required_amount_temp
     required_amount -= required_amount_temp
-    for i in range(id_counter, id_counter + required_amount):
-        students_list.append(Student(i, [3]))
     id_counter = students_list[-1].id + 1
 
     required_amount = total_amount['ITSS'][day_ind] - intersections_2['PM-ITSS'][day_ind] - intersections_2['ITSS-IB'][day_ind] - \
                       intersections_2['IVT-ITSS'][day_ind] + intersections_3['PM-ITSS-IB'][day_ind] + \
                       intersections_3['IVT-ITSS-IB'][day_ind] + \
                       intersections_3['PM-IVT-ITSS'][day_ind] - intersections_4[day_ind]
-    required_amount_temp = min(required_amount, existing_amount - index_counter)
-    for i in range(required_amount_temp):
-        tmp = [2]
-        random.shuffle(tmp)
-        students_list[i+index_counter].priority = tmp
+    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [2])
+    required_amount_temp = min(required_amount, existing_amount-index_counter)
     index_counter += required_amount_temp
     required_amount -= required_amount_temp
-    for i in range(id_counter, id_counter + required_amount):
-        students_list.append(Student(i, [2]))
     id_counter = students_list[-1].id + 1
 
     required_amount = total_amount['IVT'][day_ind] - intersections_2['IVT-ITSS'][day_ind] - intersections_2['PM-IVT'][day_ind] - \
                       intersections_2['IVT-IB'][day_ind] + intersections_3['IVT-ITSS-IB'][day_ind] + intersections_3['PM-IVT-IB'][day_ind] + \
                       intersections_3['PM-IVT-ITSS'][day_ind] - intersections_4[day_ind]
-    required_amount_temp = min(required_amount, existing_amount - index_counter)
-    for i in range(required_amount_temp):
-        tmp = [1]
-        random.shuffle(tmp)
-        students_list[i+index_counter].priority = tmp
+    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [1])
+    required_amount_temp = min(required_amount, existing_amount-index_counter)
     index_counter += required_amount_temp
     required_amount -= required_amount_temp
-    for i in range(id_counter, id_counter + required_amount):
-        students_list.append(Student(i, [1]))
     id_counter = students_list[-1].id + 1
 
     tables = [pd.DataFrame(columns=['ID', 'Наличие согласия', 'Приоритет', 'Балл Физика/ИКТ', "Балл Русский язык",
@@ -276,7 +213,7 @@ def create_tables_for_day(day_ind: int, id_counter_start: int):
 
     return id_counter, tables
 
-# TODO Пофикить количество участников для 2-4 дней
+# TODO Исправить количество 3 дня ИВТ
 id_c = 0
 for di in range(0, 4):
     res = create_tables_for_day(di, id_c)
