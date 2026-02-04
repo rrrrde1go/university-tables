@@ -1,5 +1,4 @@
 import pandas as pd
-import openpyxl as opx
 import random
 
 
@@ -22,7 +21,7 @@ total_amount = {'PM': [60, 380, 1000, 1240],
                 'IB': [70, 260, 800, 1190]}
 
 intersections_2 = {'PM-IVT': [22, 190, 760, 1090],
-                   'PM-ITSS': [17, 190, 500, 1110],
+                   'PM-ITSS': [17, 190, 600, 1110],
                    'PM-IB': [20, 150, 410, 1070],
                    'IVT-ITSS': [19, 190, 750, 1050],
                    'IVT-IB': [22, 140, 460, 1040],
@@ -43,160 +42,119 @@ students_list = []
 # Генерация списков для 4 дней
 # ======================================================================================================================
 
-def change_students_list(required_amount: int, existing_amount: int, index_counter: int,
-                         id_counter: int, priority_template):
+
+def change_students_list(required_amount: int, index_counter: int, priority_template):
     # Переназначение приоритетов у уже имеющихся абитуриентов
-    required_amount_temp = min(required_amount, existing_amount-index_counter) # Количество абитуриентов, которое можно взять из уже существующих
+    # Количество абитуриентов, которое можно взять из уже существующих
+    required_amount_temp = required_amount
     for i in range(required_amount_temp):
-        tmp = priority_template
+        tmp = priority_template[:]
         random.shuffle(tmp)
         students_list[i+index_counter].priority = tmp
     index_counter += required_amount_temp
-    required_amount -= required_amount_temp
-    # Создание новых недостающих абитуриентов
-    for i in range(id_counter, id_counter + required_amount):
-        students_list.append(Student(i, priority_template))
+
 
 def create_tables_for_day(day_ind: int, id_counter_start: int):
     # Удаление абитуриентов в зависимости от remove_percent
     if day_ind != 0:
         del students_list[0:round(len(students_list)*remove_percent)]
 
+    students_total_day_amount = (
+            sum(value[day_ind] for key, value in total_amount.items()) -
+            sum(value[day_ind] for key, value in intersections_2.items()) +
+            sum(value[day_ind] for key, value in intersections_3.items()) -
+            intersections_4[day_ind]
+    )
+    for i in range(students_total_day_amount - len(students_list)):
+        students_list.append(Student(id_counter_start + i, []))
     # Количество уже имеющихся абитуриентов
     existing_amount = len(students_list)
 
-    id_counter = id_counter_start
     index_counter = 0
 
     # Все 4 направления==============================================================
     # Вычисление нужного количества абитуриентов
     required_amount = intersections_4[day_ind]
-    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [0, 1, 2, 3])
-    required_amount_temp = min(required_amount, existing_amount-index_counter)
-    index_counter += required_amount_temp
-    required_amount -= required_amount_temp
-    id_counter = students_list[-1].id + 1
+    change_students_list(required_amount, index_counter, [0, 1, 2, 3])
+    index_counter += required_amount
 
     # 3 направления==================================================================
     required_amount = intersections_3['PM-IVT-IB'][day_ind] - intersections_4[day_ind]
-    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [0, 1, 3])
-    required_amount_temp = min(required_amount, existing_amount-index_counter)
-    index_counter += required_amount_temp
-    required_amount -= required_amount_temp
-    id_counter = students_list[-1].id + 1
+    change_students_list(required_amount, index_counter, [0, 1, 3])
+    index_counter += required_amount
 
     required_amount = intersections_3['PM-ITSS-IB'][day_ind] - intersections_4[day_ind]
-    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [0, 2, 3])
-    required_amount_temp = min(required_amount, existing_amount-index_counter)
-    index_counter += required_amount_temp
-    required_amount -= required_amount_temp
-    id_counter = students_list[-1].id + 1
+    change_students_list(required_amount, index_counter, [0, 2, 3])
+    index_counter += required_amount
 
     required_amount = intersections_3['PM-IVT-ITSS'][day_ind] - intersections_4[day_ind]
-    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [0, 1, 2])
-    required_amount_temp = min(required_amount, existing_amount-index_counter)
-    index_counter += required_amount_temp
-    required_amount -= required_amount_temp
-    id_counter = students_list[-1].id + 1
+    change_students_list(required_amount, index_counter, [0, 1, 2])
+    index_counter += required_amount
 
     required_amount = intersections_3['IVT-ITSS-IB'][day_ind] - intersections_4[day_ind]
-    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [1, 2, 3])
-    required_amount_temp = min(required_amount, existing_amount-index_counter)
-    index_counter += required_amount_temp
-    required_amount -= required_amount_temp
-    id_counter = students_list[-1].id + 1
+    change_students_list(required_amount, index_counter, [1, 2, 3])
+    index_counter += required_amount
 
     # 2 направления================================================================================
     required_amount = intersections_2['PM-IVT'][day_ind] - intersections_3['PM-IVT-IB'][day_ind] - \
                       intersections_3['PM-IVT-ITSS'][day_ind] + intersections_4[day_ind]
-    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [0, 1])
-    required_amount_temp = min(required_amount, existing_amount-index_counter)
-    index_counter += required_amount_temp
-    required_amount -= required_amount_temp
-    id_counter = students_list[-1].id + 1
+    change_students_list(required_amount, index_counter, [0, 1])
+    index_counter += required_amount
 
     required_amount = intersections_2['PM-ITSS'][day_ind] - intersections_3['PM-ITSS-IB'][day_ind] - \
                       intersections_3['PM-IVT-ITSS'][day_ind] + intersections_4[day_ind]
-    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [0, 2])
-    required_amount_temp = min(required_amount, existing_amount-index_counter)
-    index_counter += required_amount_temp
-    required_amount -= required_amount_temp
-    id_counter = students_list[-1].id + 1
+    change_students_list(required_amount, index_counter, [0, 2])
+    index_counter += required_amount
 
     required_amount = intersections_2['PM-IB'][day_ind] - intersections_3['PM-IVT-IB'][day_ind] - \
                       intersections_3['PM-ITSS-IB'][day_ind] + intersections_4[day_ind]
-    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [0, 3])
-    required_amount_temp = min(required_amount, existing_amount-index_counter)
-    index_counter += required_amount_temp
-    required_amount -= required_amount_temp
-    id_counter = students_list[-1].id + 1
+    change_students_list(required_amount, index_counter, [0, 3])
+    index_counter += required_amount
 
     required_amount = intersections_2['IVT-IB'][day_ind] - intersections_3['PM-IVT-IB'][day_ind] - \
                       intersections_3['IVT-ITSS-IB'][day_ind] + intersections_4[day_ind]
-    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [1, 3])
-    required_amount_temp = min(required_amount, existing_amount-index_counter)
-    index_counter += required_amount_temp
-    required_amount -= required_amount_temp
-    id_counter = students_list[-1].id + 1
+    change_students_list(required_amount, index_counter, [1, 3])
+    index_counter += required_amount
 
     required_amount = intersections_2['IVT-ITSS'][day_ind] - intersections_3['IVT-ITSS-IB'][day_ind] - \
                       intersections_3['PM-IVT-ITSS'][day_ind] + intersections_4[day_ind]
-    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [1, 2])
-    required_amount_temp = min(required_amount, existing_amount-index_counter)
-    index_counter += required_amount_temp
-    required_amount -= required_amount_temp
-    id_counter = students_list[-1].id + 1
+    change_students_list(required_amount, index_counter, [1, 2])
+    index_counter += required_amount
 
     required_amount = intersections_2['ITSS-IB'][day_ind] - intersections_3['PM-ITSS-IB'][day_ind] - \
                       intersections_3['IVT-ITSS-IB'][day_ind] + intersections_4[day_ind]
-    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [2, 3])
-    required_amount_temp = min(required_amount, existing_amount-index_counter)
-    index_counter += required_amount_temp
-    required_amount -= required_amount_temp
-    id_counter = students_list[-1].id + 1
+    change_students_list(required_amount, index_counter, [2, 3])
+    index_counter += required_amount
 
     # 1 направление================================================================================
     required_amount = total_amount['PM'][day_ind] - intersections_2['PM-ITSS'][day_ind] - intersections_2['PM-IVT'][day_ind] - \
                       intersections_2['PM-IB'][day_ind] + intersections_3['PM-ITSS-IB'][day_ind] + intersections_3['PM-IVT-IB'][day_ind] + \
                       intersections_3['PM-IVT-ITSS'][day_ind] - intersections_4[day_ind]
-    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [0])
-    required_amount_temp = min(required_amount, existing_amount-index_counter)
-    index_counter += required_amount_temp
-    required_amount -= required_amount_temp
-    id_counter = students_list[-1].id + 1
+    change_students_list(required_amount, index_counter, [0])
+    index_counter += required_amount
 
     required_amount = total_amount['IB'][day_ind] - intersections_2['PM-IB'][day_ind] - intersections_2['ITSS-IB'][day_ind] - \
                       intersections_2['IVT-IB'][day_ind] + intersections_3['PM-ITSS-IB'][day_ind] + intersections_3['PM-IVT-IB'][day_ind] + \
                       intersections_3['IVT-ITSS-IB'][day_ind] - intersections_4[day_ind]
-    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [3])
-    required_amount_temp = min(required_amount, existing_amount-index_counter)
-    index_counter += required_amount_temp
-    required_amount -= required_amount_temp
-    id_counter = students_list[-1].id + 1
+    change_students_list(required_amount, index_counter, [3])
+    index_counter += required_amount
 
     required_amount = total_amount['ITSS'][day_ind] - intersections_2['PM-ITSS'][day_ind] - intersections_2['ITSS-IB'][day_ind] - \
                       intersections_2['IVT-ITSS'][day_ind] + intersections_3['PM-ITSS-IB'][day_ind] + \
                       intersections_3['IVT-ITSS-IB'][day_ind] + \
                       intersections_3['PM-IVT-ITSS'][day_ind] - intersections_4[day_ind]
-    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [2])
-    required_amount_temp = min(required_amount, existing_amount-index_counter)
-    index_counter += required_amount_temp
-    required_amount -= required_amount_temp
-    id_counter = students_list[-1].id + 1
+    change_students_list(required_amount, index_counter, [2])
+    index_counter += required_amount
 
     required_amount = total_amount['IVT'][day_ind] - intersections_2['IVT-ITSS'][day_ind] - intersections_2['PM-IVT'][day_ind] - \
                       intersections_2['IVT-IB'][day_ind] + intersections_3['IVT-ITSS-IB'][day_ind] + intersections_3['PM-IVT-IB'][day_ind] + \
                       intersections_3['PM-IVT-ITSS'][day_ind] - intersections_4[day_ind]
-    change_students_list(required_amount, existing_amount,  index_counter, id_counter, [1])
-    required_amount_temp = min(required_amount, existing_amount-index_counter)
-    index_counter += required_amount_temp
-    required_amount -= required_amount_temp
-    id_counter = students_list[-1].id + 1
+    change_students_list(required_amount, index_counter, [1])
+    index_counter += required_amount
 
     tables = [pd.DataFrame(columns=['ID', 'Наличие согласия', 'Приоритет', 'Балл Физика/ИКТ', "Балл Русский язык",
                                     "Балл Математика", "Балл за индивидуальные достижения", "Сумма баллов"]) for _ in
               range(4)]
-    print(len(students_list))
 
     for i in range(len(students_list)):
         current_student_df = pd.DataFrame(
@@ -211,9 +169,10 @@ def create_tables_for_day(day_ind: int, id_counter_start: int):
                 current_student_df.iat[0, 2] = students_list[i].priority.index(j) + 1
                 tables[j] = pd.concat([tables[j], current_student_df])
 
+    id_counter = students_list[-1].id + 1
     return id_counter, tables
 
-# TODO Исправить количество 3 дня ИВТ
+
 id_c = 0
 for di in range(0, 4):
     res = create_tables_for_day(di, id_c)
