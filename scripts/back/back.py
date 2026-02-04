@@ -1,4 +1,5 @@
 import mysql.connector
+import openpyxl
 
 mydb = mysql.connector.connect(
     host='localhost',
@@ -9,6 +10,9 @@ mydb = mysql.connector.connect(
 )
 
 mycursor = mydb.cursor()
+
+
+
 
 mycursor.execute('SELECT * FROM users')
 
