@@ -1,3 +1,4 @@
+/* Общие настройки */
 * {
     margin: 0;
     padding: 0;
@@ -5,11 +6,12 @@
     font-family: Arial, sans-serif;
 }
 
+/* Основной фон */
 body {
     background: #f5f6fa;
     color: #2f3640;
 }
-
+/* Верхняя панель */
 header {
     background: #273c75;
     color: white;
@@ -19,27 +21,11 @@ header {
     align-items: center;
 }
 
-header a {
-    color: white;
-    text-decoration: none;
-    margin-left: 20px;
-    font-weight: bold;
-}
-
-header a:hover {
-    text-decoration: underline;
-}
-
+/* основной контент */
 main {
     padding: 30px;
 }
 
-footer {
-    background: #dcdde1;
-    text-align: center;
-    padding: 10px;
-    margin-top: 40px;
-}
 
 .cards {
     display: flex;

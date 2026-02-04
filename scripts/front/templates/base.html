@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %} Таблицы распределения{% endblock%}</title>
+    <!-- подключаем CSS -->
     <link rel = 'stylesheet' href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
 <header>
+    <!-- Шапка страницы -->
     <div class = "logo">
         <a href="{{url_for('index')}}">Таблицы</a>
     </div>

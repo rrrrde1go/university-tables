@@ -1,27 +1,24 @@
 from flask import Flask, render_template
-from table_tools.check_tables import TableManager
-
+#создаём веб приложение
 app = Flask(__name__)
-tm = TableManager(tables_dir="../tables")
 
+
+#Главная страница. Здесь происходит выбор дня
 @app.route('/')
 def index():
     return render_template('index.html')
 
+
+#страница таблиц для конкретного дня с номером day
 @app.route('/tables/<int:day>')
 def tables(day):
-    tm.load_day(day)
-    tables_data = tm.tables
-    cutoff = tm.calculate_cutoff()
-    stats = tm.get_statistics()
-    return render_template('tables.html', day=day, tables=tables_data, cutoff=cutoff, stats=stats)
+    return render_template('tables.html', day=day)
 
+
+#страница с пдфниками каждого дня
 @app.route('/pdf/<int:day>')
 def pdf_view(day):
-    tm.load_day(day)
-    cutoff = tm.calculate_cutoff()
-    stats = tm.get_statistics()
-    return render_template('pdf.html', day=day, cutoff=cutoff, stats=stats)
+    return render_template('pdf.html', day=day)
 
 if __name__ == '__main__':
     app.run(debug=True)
