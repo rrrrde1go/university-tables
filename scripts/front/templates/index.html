@@ -7,10 +7,10 @@
 <p>Выберите день для просмотра таблиц</p>
 
 <div class="days">
-    <a href="/tables/1" class="day-card"> День 1 </a>
-    <a href="/tables/2" class="day-card"> День 2 </a>
-    <a href="/tables/3" class="day-card"> День 3 </a>
-    <a href="/tables/4" class="day-card"> День 4 </a>
+    <a href="{{ url_for('tables', day=1)}}" class="day-card">День 1</a>
+    <a href="{{ url_for('tables', day=2)}}" class="day-card"> День 2 </a>
+    <a href="{{ url_for('tables', day=3)}}" class="day-card"> День 3 </a>
+    <a href="{{ url_for('tables', day=4)}}" class="day-card"> День 4 </a>
 </div>
 
 {% endblock %}
