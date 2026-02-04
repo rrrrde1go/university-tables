@@ -1,28 +1,8 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, jsonify
 from table_tools.check_tables import TableManager
 
 app = Flask(__name__)
 tm = TableManager(tables_dir="C:/Users/rrrrd/PycharmProjects/university-tables/tables")
-
-
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-@app.route('/tables/<int:day>')
-def tables(day):
-    tm.load_day(day)
-    tables_data = tm.tables
-    cutoff = tm.calculate_cutoff()
-    stats = tm.get_statistics()
-    return render_template('tables.html', day=day, tables=tables_data, cutoff=cutoff, stats=stats)
-
-@app.route('/pdf/<int:day>')
-def pdf_view(day):
-    tm.load_day(day)
-    cutoff = tm.calculate_cutoff()
-    stats = tm.get_statistics()
-    return render_template('pdf.html', day=day, cutoff=cutoff, stats=stats)
 
 @app.route('/api/tables/<int:day>')
 def api_tables(day):
