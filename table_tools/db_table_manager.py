@@ -1,6 +1,7 @@
 import sqlite3
 import pandas as pd
 import os
+from Constants import op_place_amount
 
 class TableManager:
     def __init__(self, db_path="students.db"):
@@ -86,16 +87,34 @@ class TableManager:
             stats[faculty] = count
         return stats
 
+    # Расчёт проходного балла
     def calculate_cutoff(self):
         cutoff = {}
-        for faculty in ["PM", "IVT", "ITSS", "IB"]:
-            self.cursor.execute("""
-                SELECT MAX(total_points) FROM students
-                WHERE faculty=? AND agreed=1
-                ORDER BY total_points
-            """, (faculty,))
-            val = self.cursor.fetchone()[0]
-            cutoff[faculty] = val if val is not None else "НЕДОБОР"
+        op_names = ["PM", "IVT", "ITSS", "IB"]
+        cutoff_points_list = {"PM": [], "IVT": [], "ITSS": [], "IB": []}
+        self.cursor.execute(
+            """SELECT fio, total_points, agreed,
+               priority1, priority2, priority3, priority4,
+               physics, russian, math, individual FROM students ORDER BY total_points DESC"""
+        )
+        rows = self.cursor.fetchall()
+        for row in rows:
+            if not row[2]:
+                continue
+            if all(len(cutoff_points_list[name]) == op_place_amount[name] for name in op_names):
+                break
+            total_points = row[1]
+            priorities = [row[3], row[4], row[5], row[6]]
+            for i in sorted(int(j) for j in priorities if int(j) != 0):
+                op_name = op_names[priorities.index(i)]
+                if len(cutoff_points_list[op_name]) < op_place_amount[op_name]:
+                    cutoff_points_list[op_name].append(total_points)
+
+        for name in op_names:
+            if len(cutoff_points_list[name]) == op_place_amount[name]:
+                cutoff[name] = cutoff_points_list[name][-1]
+            else:
+                cutoff[name] = "Недобор"
         return cutoff
 
     def close(self):
