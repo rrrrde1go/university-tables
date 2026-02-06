@@ -77,7 +77,6 @@ class TableManager:
                         row.get("Балл Математика", 0),
                         row.get("Балл за индивидуальные достижения", 0)
                     ))
-                self.conn.commit()
         self.conn.commit()
 
     def get_statistics(self):
@@ -115,7 +114,11 @@ class TableManager:
                 cutoff[name] = cutoff_points_list[name][-1]
             else:
                 cutoff[name] = "Недобор"
+
         return cutoff
+
+    def filtered_students(self):
+        pass
 
     def close(self):
         self.conn.close()
