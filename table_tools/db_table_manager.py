@@ -120,7 +120,30 @@ class TableManager:
         return cutoff
 
     def filtered_students(self):
-        pass
+        op_names = ["PM", "IVT", "ITSS", "IB"]
+        cutoff_students_list = {"PM": [], "IVT": [], "ITSS": [], "IB": []}
+        self.cursor.execute(
+            """SELECT fio, faculty, specialty, total_points, agreed,
+               priority1, priority2, priority3, priority4,
+               physics, russian, math, individual FROM students ORDER BY total_points DESC"""
+        )
+        rows = self.cursor.fetchall()
+        for row in rows:
+            if not row[4]:
+                continue
+            if all(len(cutoff_students_list[name]) == op_place_amount[name] for name in op_names):
+                break
+            priorities = [row[5], row[6], row[7], row[8]]
+            for i in sorted(int(j) for j in priorities if int(j) != 0):
+                op_name = op_names[priorities.index(i)]
+                if len(cutoff_students_list[op_name]) < op_place_amount[op_name]:
+                    cutoff_students_list[op_name].append(row[:])
+
+        result_list = []
+        for name in op_names:
+            result_list += [[i[0]] + [name] + [name] + list(i[3:]) for i in cutoff_students_list[name]]
+
+        return result_list
 
     def close(self):
         self.conn.close()

@@ -71,13 +71,7 @@ def pdf_view():
     tm = TableManager()
     tm.load_day(day)
 
-    tm.cursor.execute("""
-        SELECT fio, faculty, specialty, total_points, agreed,
-               priority1, priority2, priority3, priority4,
-               physics, russian, math, individual
-        FROM students WHERE day=?
-    """, (day,))
-    rows = tm.cursor.fetchall()
+    rows = tm.filtered_students()
 
     tables_data = []
     for r in rows:
