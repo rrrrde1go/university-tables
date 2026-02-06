@@ -2,21 +2,17 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %} Таблицы распределения{% endblock%}</title>
-    <!-- подключаем CSS -->
-    <link rel = 'stylesheet' href="{{ url_for('static', filename='style.css') }}">
+    <title>{% block title %}Таблицы{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-
 <header>
-    <!-- Шапка страницы -->
-    <div class = "logo">
-        <a href="{{url_for('index')}}">Таблицы</a>
+    <div class="logo">
+        <a href="{{ url_for('index') }}">Таблицы</a>
     </div>
 </header>
 <main>
-    {% block content %} {% endblock %}
+    {% block content %}{% endblock %}
 </main>
-
 </body>
 </html>

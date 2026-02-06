@@ -1,13 +1,8 @@
-{% extends 'base.html' %}
-{% block title %} PDF день {{ day }} {% endblock %}
-
+{% extends "base.html" %}
+{% block title %}PDF день {{ day }}{% endblock %}
 {% block content %}
-<h1>PDF отчёт - день {{day}}</h1>
-
-
+<h1>PDF Отчёт - День {{ day }}</h1>
 <div class="pdf-placeholder">
-    <button class="pdf-download">
-        Скачать PDF
-    </button>
+    <a href="{{ pdf_file }}" class="pdf-download">Скачать PDF</a>
 </div>
 {% endblock %}

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Отчёт день {{ day }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; color: #2f3640; }
+        h1, h2, h3 { color: #273c75; margin-bottom: 10px; }
+        table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+        th, td { border: 1px solid #333; padding: 8px; text-align: center; }
+        th { background-color: #40739e; color: white; }
+        img { display: block; margin: 20px auto; max-width: 100%; }
+        .section { margin-bottom: 30px; }
+        .info { font-size: 0.9em; color: #718093; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+<h1>PDF отчёт — День {{ day }}</h1>
+<p class="info">Дата и время формирования отчёта: {{ timestamp }}</p>
+
+<div class="section">
+    <h2>Проходные баллы по факультетам</h2>
+    <table>
+        <tr>
+            <th>Факультет</th>
+            <th>Проходной балл</th>
+            <th>Количество мест</th>
+        </tr>
+        {% for fac, val in cutoff.items() %}
+        <tr>
+            <td>{{ fac }}</td>
+            <td>{{ val }}</td>
+            <td>{{ stats[fac]['capacity'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<div class="section">
+    <h2>Динамика проходного балла</h2>
+    <img src="data:image/png;base64,{{ graph_img }}" alt="График динамики">
+</div>
+
+<div class="section">
+    <h2>Статистика по факультетам</h2>
+    {% for fac, s in stats.items() %}
+    <h3>{{ fac }}</h3>
+    <table>
+        <tr>
+            <th>Всего заявлений</th>
+            <th>Приоритет 1</th>
+            <th>Приоритет 2</th>
+            <th>Приоритет 3</th>
+            <th>Приоритет 4</th>
+            <th>Зачислено 1</th>
+            <th>Зачислено 2</th>
+            <th>Зачислено 3</th>
+            <th>Зачислено 4</th>
+        </tr>
+        <tr>
+            <td>{{ s['total'] }}</td>
+            <td>{{ s['priorities'][1] }}</td>
+            <td>{{ s['priorities'][2] }}</td>
+            <td>{{ s['priorities'][3] }}</td>
+            <td>{{ s['priorities'][4] }}</td>
+            <td>{{ s['enrolled'][1] }}</td>
+            <td>{{ s['enrolled'][2] }}</td>
+            <td>{{ s['enrolled'][3] }}</td>
+            <td>{{ s['enrolled'][4] }}</td>
+        </tr>
+    </table>
+    {% endfor %}
+</div>
+
+<div class="section">
+    <h2>Списки абитуриентов по факультетам</h2>
+    {% for fac in ['PM','IVT','ITSS','IB'] %}
+    <h3>{{ fac }}</h3>
+    <table>
+        <tr>
+            {% for key in ['id','fio','total_points','priority1','priority2','priority3','priority4','agreed'] %}
+            <th>{{ key }}</th>
+            {% endfor %}
+        </tr>
+        {% for row in tables if row['faculty']==fac %}
+        <tr>
+            <td>{{ row['id'] }}</td>
+            <td>{{ row.get('fio','') }}</td>
+            <td>{{ row['total_points'] }}</td>
+            <td>{{ row['priority1'] }}</td>
+            <td>{{ row['priority2'] }}</td>
+            <td>{{ row['priority3'] }}</td>
+            <td>{{ row['priority4'] }}</td>
+            <td>{{ row['agreed'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endfor %}
+</div>
+
+</body>
+</html>

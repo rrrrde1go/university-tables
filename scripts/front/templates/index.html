@@ -1,16 +1,10 @@
 {% extends "base.html" %}
-
 {% block title %}Главная{% endblock %}
-
 {% block content %}
-<h1>Выбор дня</h1>
-<p>Выберите день для просмотра таблиц</p>
-<!-- кнопки для перехода по номерам дня-->
-<div class="days">
-    <a href="{{ url_for('tables', day=1)}}" class="day-card">День 1</a>
-    <a href="{{ url_for('tables', day=2)}}" class="day-card"> День 2 </a>
-    <a href="{{ url_for('tables', day=3)}}" class="day-card"> День 3 </a>
-    <a href="{{ url_for('tables', day=4)}}" class="day-card"> День 4 </a>
-</div>
-
+<h1>Выберите день</h1>
+<form action="{{ url_for('tables') }}" method="get">
+    <label for="day">День:</label>
+    <input type="number" name="day" id="day" value="1" min="1">
+    <button type="submit">Показать таблицу</button>
+</form>
 {% endblock %}

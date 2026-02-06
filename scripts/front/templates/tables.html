@@ -1,16 +1,94 @@
 {% extends "base.html" %}
-
-{% block title %}Таблицы{% endblock %}
-
+{% block title %}Таблицы день {{ day }}{% endblock %}
 {% block content %}
-<h1>Таблицы - день {{ day }}</h1>
+<h1>Таблицы - День {{ day }}</h1>
 
-<div class="table-placeholder">
-    <p> Таблицы для дня {{ day }}</p>
-    <!-- Переход к пдфникам -->
-    <a href="{{ url_for('pdf_view', day=day)}}" class="pdf-button">
-        Перейти к PDF дня {{ day }}
-    </a>
+<div class="controls">
+    <label for="filter-column">Фильтр по колонке:</label>
+    <select id="filter-column">
+        <option value="">--Выберите колонку--</option>
+        {% for key in tables[0].keys() %}
+        <option value="{{ key }}">{{ key }}</option>
+        {% endfor %}
+    </select>
 
+    <label for="filter-value">Значение:</label>
+    <input type="text" id="filter-value" placeholder="Введите значение">
+
+    <button id="apply-filter">Применить фильтр</button>
+
+    <a href="{{ url_for('pdf_view', day=day) }}" class="pdf-button" style="margin-left:20px;">Скачать PDF</a>
 </div>
+
+<div class="table-placeholder" style="margin-top:15px;">
+    <p>Проходной балл по факультетам:</p>
+    <ul>
+        {% for fac, cut in cutoff.items() %}
+            <li>{{ fac }}: {{ cut }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Абитуриенты</h2>
+    <table id="students-table" border="1" cellpadding="5" cellspacing="0">
+        <thead>
+        <tr>
+            {% for key in tables[0].keys() %}
+            <th>{{ key }}</th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for row in tables %}
+        <tr>
+            {% for value in row.values() %}
+            <td>{{ value }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const table = document.getElementById('students-table');
+    const filterColumn = document.getElementById('filter-column');
+    const filterValue = document.getElementById('filter-value');
+    const applyFilter = document.getElementById('apply-filter');
+
+    applyFilter.addEventListener('click', () => {
+        const col = filterColumn.value;
+        const val = filterValue.value.toLowerCase();
+        const rows = table.tBodies[0].rows;
+
+        for (let i = 0; i < rows.length; i++) {
+            let show = true;
+            if (col && val) {
+                const idx = Array.from(rows[0].parentNode.parentNode.querySelectorAll('th')).findIndex(th => th.textContent === col);
+                const cell = rows[i].cells[idx].textContent.toLowerCase();
+                if (!cell.includes(val)) {
+                    show = false;
+                }
+            }
+            rows[i].style.display = show ? '' : 'none';
+        }
+    });
+});
+</script>
+
+<style>
+.controls {
+    margin-bottom: 20px;
+}
+.pdf-button {
+    padding: 8px 15px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+}
+.pdf-button:hover {
+    background-color: #45a049;
+}
+</style>
 {% endblock %}

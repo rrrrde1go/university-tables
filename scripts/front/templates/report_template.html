@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Отчёт день {{ day }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1, h2, h3 { color: #273c75; }
+        table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+        th, td { border: 1px solid #333; padding: 8px; text-align: center; }
+        th { background-color: #40739e; color: white; }
+    </style>
+</head>
+<body>
+
+<h1>Отчёт — День {{ day }}</h1>
+
+<h2>Проходные баллы по факультетам</h2>
+<table>
+    <tr>
+        <th>Факультет</th>
+        <th>Проходной балл</th>
+    </tr>
+    {% for fac, val in cutoff.items() %}
+    <tr>
+        <td>{{ fac }}</td>
+        <td>{{ val }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h2>Статистика абитуриентов</h2>
+{% for fac, s in stats.items() %}
+<h3>{{ fac }}</h3>
+<table>
+    <tr>
+        <th>Всего заявлений</th>
+        <th>Приоритет 1</th>
+        <th>Приоритет 2</th>
+        <th>Приоритет 3</th>
+        <th>Приоритет 4</th>
+    </tr>
+    <tr>
+        <td>{{ s.total }}</td>
+        <td>{{ s.priorities[1] }}</td>
+        <td>{{ s.priorities[2] }}</td>
+        <td>{{ s.priorities[3] }}</td>
+        <td>{{ s.priorities[4] }}</td>
+    </tr>
+</table>
+{% endfor %}
+
+<h2>Списки абитуриентов</h2>
+<table>
+    <tr>
+        {% for key in ['fio','faculty','specialty','total_points','agreed','priority1','priority2','priority3','priority4'] %}
+        <th>{{ key }}</th>
+        {% endfor %}
+    </tr>
+    {% for row in tables %}
+    <tr>
+        <td>{{ row['fio'] }}</td>
+        <td>{{ row['faculty'] }}</td>
+        <td>{{ row['specialty'] }}</td>
+        <td>{{ row['total_points'] }}</td>
+        <td>{{ row['agreed'] }}</td>
+        <td>{{ row['priority1'] }}</td>
+        <td>{{ row['priority2'] }}</td>
+        <td>{{ row['priority3'] }}</td>
+        <td>{{ row['priority4'] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+</body>
+</html>
