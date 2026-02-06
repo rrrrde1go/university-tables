@@ -4,7 +4,7 @@ from io import BytesIO
 from flask import render_template
 import datetime
 
-def generate_pdf(day, tables_data, cutoff, stats, cutoff_history={}):
+def generate_pdf(day, tables_data, cutoff, stats, raw_tables_data, cutoff_history={}):
     buffer = BytesIO()
     c = canvas.Canvas(buffer, pagesize=A4)
     width, height = A4
