@@ -38,6 +38,8 @@ class TableManager:
 
     # Загрузка данных об абитуриентах на определённый день
     def load_day(self, day):
+        self.cursor.execute("DELETE FROM students")
+        self.conn.commit()
         excel_folder = os.path.join(os.path.dirname(__file__), "../tables")
         files = ["pm", "ivt", "itss", "ib"]
         for idx, faculty_file in enumerate(files):
