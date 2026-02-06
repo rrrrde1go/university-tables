@@ -110,6 +110,7 @@ class TableManager:
                 op_name = op_names[priorities.index(i)]
                 if len(cutoff_points_list[op_name]) < op_place_amount[op_name]:
                     cutoff_points_list[op_name].append(total_points)
+                    break
 
         for name in op_names:
             if len(cutoff_points_list[name]) == op_place_amount[name]:
@@ -119,6 +120,7 @@ class TableManager:
 
         return cutoff
 
+    # Возвращает список прошедших абитуриентов
     def filtered_students(self):
         op_names = ["PM", "IVT", "ITSS", "IB"]
         cutoff_students_list = {"PM": [], "IVT": [], "ITSS": [], "IB": []}
@@ -138,6 +140,7 @@ class TableManager:
                 op_name = op_names[priorities.index(i)]
                 if len(cutoff_students_list[op_name]) < op_place_amount[op_name]:
                     cutoff_students_list[op_name].append(row[:])
+                    break
 
         result_list = []
         for name in op_names:
