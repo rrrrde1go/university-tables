@@ -18,7 +18,7 @@ def tables():
         SELECT fio, faculty, specialty, total_points, agreed,
                priority1, priority2, priority3, priority4,
                physics, russian, math, individual
-        FROM students WHERE day=?
+        FROM students WHERE day=? AND agreed=1
     """, (day,))
     rows = tm.cursor.fetchall()
 
