@@ -158,7 +158,7 @@ def create_tables_for_day(day_ind: int, id_counter_start: int):
 
     for i in range(len(students_list)):
         current_student_df = pd.DataFrame(
-            {'ID': [students_list[i].id], 'Наличие согласия': [students_list[i].agreement],
+            {'ID': [2026 * 10000 + students_list[i].id], 'Наличие согласия': [students_list[i].agreement],
              'Приоритет': [0], 'Балл Физика/ИКТ': [students_list[i].scores[0]],
              "Балл Русский язык": [students_list[i].scores[1]],
              "Балл Математика": [students_list[i].scores[2]],
