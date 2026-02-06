@@ -9,6 +9,7 @@ class TableManager:
         self.cursor = self.conn.cursor()
         self._create_table()
 
+    # Создание пустой таблицы
     def _create_table(self):
         self.cursor.execute("""
         DROP TABLE IF EXISTS students
@@ -34,6 +35,7 @@ class TableManager:
         """)
         self.conn.commit()
 
+    # Загрузка данных об абитуриентах на определённый день
     def load_day(self, day):
         excel_folder = os.path.join(os.path.dirname(__file__), "../tables")
         files = ["pm", "ivt", "itss", "ib"]
@@ -42,30 +44,39 @@ class TableManager:
             df = pd.read_excel(file_path)
             for _, row in df.iterrows():
                 priorities = [0, 0, 0, 0]
-                if row["Приоритет"] > 0:
+                if row["Приоритет"] != 0:
                     priorities[idx] = int(row["Приоритет"])
-                self.cursor.execute("""
-                    INSERT INTO students (
-                        day, fio, faculty, specialty, total_points, agreed,
-                        priority1, priority2, priority3, priority4,
-                        physics, russian, math, individual
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, (
-                    day,
-                    row.get("ID", ""),
-                    faculty_file.upper(),
-                    "",
-                    row.get("Сумма баллов", 0),
-                    int(row.get("Наличие согласия", 0)),
-                    priorities[0],
-                    priorities[1],
-                    priorities[2],
-                    priorities[3],
-                    row.get("Балл Физика/ИКТ", 0),
-                    row.get("Балл Русский язык", 0),
-                    row.get("Балл Математика", 0),
-                    row.get("Балл за индивидуальные достижения", 0)
-                ))
+                self.cursor.execute("SELECT 1 FROM students WHERE fio = ?",
+                                    (row.get("ID"),))
+                if self.cursor.fetchone() is not None:
+                    self.cursor.execute(
+                        f"UPDATE students SET priority{idx+1} = ? WHERE fio = ?",
+                        (priorities[idx], row.get("ID"))
+                    )
+                else:
+                    self.cursor.execute("""
+                        INSERT INTO students (
+                            day, fio, faculty, specialty, total_points, agreed,
+                            priority1, priority2, priority3, priority4,
+                            physics, russian, math, individual
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """, (
+                        day,
+                        row.get("ID", ""),
+                        faculty_file.upper(),
+                        "",
+                        row.get("Сумма баллов", 0),
+                        int(row.get("Наличие согласия", 0)),
+                        priorities[0],
+                        priorities[1],
+                        priorities[2],
+                        priorities[3],
+                        row.get("Балл Физика/ИКТ", 0),
+                        row.get("Балл Русский язык", 0),
+                        row.get("Балл Математика", 0),
+                        row.get("Балл за индивидуальные достижения", 0)
+                    ))
+                self.conn.commit()
         self.conn.commit()
 
     def get_statistics(self):
@@ -80,7 +91,8 @@ class TableManager:
         for faculty in ["PM", "IVT", "ITSS", "IB"]:
             self.cursor.execute("""
                 SELECT MAX(total_points) FROM students
-                WHERE faculty=?
+                WHERE faculty=? AND agreed=1
+                ORDER BY total_points
             """, (faculty,))
             val = self.cursor.fetchone()[0]
             cutoff[faculty] = val if val is not None else "НЕДОБОР"
