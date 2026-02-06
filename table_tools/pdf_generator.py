@@ -32,11 +32,12 @@ def generate_pdf(day, tables_data, cutoff, stats, cutoff_history={}):
     c.drawString(50, y_pos, "Абитуриенты:")
     y_pos -= 15
     c.setFont("Helvetica", 8)
+    #Заголовки направлений
+    headers1 = []
 
     # Заголовки
-    headers = ["ФИО", "Факультет", "Специальность", "Общ. баллы",
-               "Согласие", "Приоритет 1", "Приоритет 2", "Приоритет 3", "Приоритет 4"]
-    x_positions = [50, 150, 220, 300, 360, 420, 470, 520, 570]
+    headers = ["ФИО", "Общ. баллы"]
+    x_positions = [50, 150]
     for i, header in enumerate(headers):
         c.drawString(x_positions[i], y_pos, header)
     y_pos -= 12
@@ -47,10 +48,7 @@ def generate_pdf(day, tables_data, cutoff, stats, cutoff_history={}):
             c.showPage()
             y_pos = height - 50
         values = [
-            row.get("fio", ""), row.get("faculty", ""), row.get("specialty", ""),
-            str(row.get("total_points", "")), str(row.get("agreed", "")),
-            str(row.get("priority1", "")), str(row.get("priority2", "")),
-            str(row.get("priority3", "")), str(row.get("priority4", ""))
+            row.get("fio", ""), str(row.get("total_points", ""))
         ]
         for i, val in enumerate(values):
             c.drawString(x_positions[i], y_pos, val)

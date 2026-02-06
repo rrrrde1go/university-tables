@@ -96,3 +96,15 @@ button:hover, .pdf-download:hover, .pdf-button:hover {
 .logo a:hover {
     text-decoration: underline;
 }
+.chart {
+  display: flex;
+  align-items: flex-end;
+  height: 400px;
+  gap: 10px;
+}
+.bar {
+  width: 50px;
+  background-color: blue;
+  color: white;
+  text-align: center;
+}
