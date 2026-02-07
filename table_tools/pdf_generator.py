@@ -205,7 +205,7 @@ def generate_pdf(day, tables_data, cutoff, stats, raw_tables_data, cutoff_histor
     y_pos = m_y_pos
     y_pos -= 20
 
-    # ПОДСЧЕТ СТАТИСТИКИ - исправленная версия вашего кода
+
     for raw_table in raw_tables_data:
         # Для приоритета 1
         if raw_table.get("priority1") == 1:
@@ -307,25 +307,23 @@ def generate_pdf(day, tables_data, cutoff, stats, raw_tables_data, cutoff_histor
 
     y_pos -= 30
 
-    # Создание таблицы - ЗАНИМАЕМ ВСЮ ШИРИНУ СТРАНИЦЫ
+    # Создание таблицы
     c.setFont("Helvetica", 9)
 
-    # Определяем позиции столбцов - ПЕРВЫЙ СТОЛБЕЦ ОЧЕНЬ ШИРОКИЙ, остальные узкие
-    # Ширина страницы A4: 595 пикселей
-    # Отступы: 30 слева, 30 справа
+
     available_width = width - 60
 
-    # Первый столбец - 75% ширины для текста
-    # Остальные 4 столбца - по 6.25% каждый для цифр
-    col1_width = available_width * 0.75  # ~401px
-    col_other_width = available_width * 0.0625  # ~33px каждый
+
+
+    col1_width = available_width * 0.75
+    col_other_width = available_width * 0.0625
 
     col_x_positions = [
-        30,  # Первый столбец начинается на 30px
-        30 + col1_width,  # Второй столбец
-        30 + col1_width + col_other_width,  # Третий столбец
-        30 + col1_width + 2 * col_other_width,  # Четвертый столбец
-        30 + col1_width + 3 * col_other_width  # Пятый столбец
+        30,
+        30 + col1_width,
+        30 + col1_width + col_other_width,
+        30 + col1_width + 2 * col_other_width,
+        30 + col1_width + 3 * col_other_width
     ]
 
     # Заголовок таблицы
@@ -334,7 +332,7 @@ def generate_pdf(day, tables_data, cutoff, stats, raw_tables_data, cutoff_histor
         c.drawString(col_x_positions[i], y_pos, header)
     y_pos -= 15
 
-    # Разделительная линия - на всю ширину таблицы
+
     c.line(col_x_positions[0], y_pos, col_x_positions[4] + col_other_width, y_pos)
     y_pos -= 20
 
