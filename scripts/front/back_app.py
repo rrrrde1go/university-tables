@@ -91,10 +91,38 @@ def pdf_view():
             "individual": r[12]
         })
 
+    tm.cursor.execute(
+        """SELECT fio, faculty, specialty, total_points, agreed,
+           priority1, priority2, priority3, priority4,
+           physics, russian, math, individual FROM students ORDER BY total_points DESC"""
+    )
+
+    rows = tm.cursor.fetchall()
+    raw_tables_data = []
+    for r in rows:
+        raw_tables_data.append({
+            "fio": r[0],
+            "faculty": r[1],
+            "specialty": r[2],
+            "total_points": r[3],
+            "agreed": r[4],
+            "priority1": r[5],
+            "priority2": r[6],
+            "priority3": r[7],
+            "priority4": r[8],
+            "physics": r[9],
+            "russian": r[10],
+            "math": r[11],
+            "individual": r[12]
+        })
+
     cutoff = tm.calculate_cutoff()
 
     raw_stats = tm.get_statistics()
     stats = {}
+
+
+
     for fac, s in raw_stats.items():
         if isinstance(s, dict):
             stats[fac] = {
@@ -109,7 +137,7 @@ def pdf_view():
 
     tm.close()
 
-    pdf_file = generate_pdf(day, tables_data, cutoff, stats, cutoff_history={})
+    pdf_file = generate_pdf(day, tables_data, cutoff, stats, raw_tables_data, cutoff_history={})
     return send_file(pdf_file,
                      download_name=f"report_day_{day}.pdf",
                      as_attachment=True,
