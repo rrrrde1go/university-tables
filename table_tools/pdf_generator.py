@@ -327,7 +327,7 @@ def generate_pdf(day, tables_data, cutoff, stats, raw_tables_data, cutoff_histor
     ]
 
     # Заголовок таблицы
-    headers = ["", "ПМ", "ИВТ", "ИТСС", "ИБ"]
+    headers = ["", "PM", "IVT", "ITSS", "IB"]
     for i, header in enumerate(headers):
         c.drawString(col_x_positions[i], y_pos, header)
     y_pos -= 15
@@ -337,7 +337,7 @@ def generate_pdf(day, tables_data, cutoff, stats, raw_tables_data, cutoff_histor
     y_pos -= 20
 
     # Строка 1: Общее кол-во заявлений
-    c.drawString(col_x_positions[0], y_pos, "Общее кол-во заявлений")
+    c.drawString(col_x_positions[0], y_pos, "Total amount of applications")
     c.drawString(col_x_positions[1], y_pos, str(pm))
     c.drawString(col_x_positions[2], y_pos, str(ivt))
     c.drawString(col_x_positions[3], y_pos, str(itss))
@@ -345,7 +345,7 @@ def generate_pdf(day, tables_data, cutoff, stats, raw_tables_data, cutoff_histor
     y_pos -= 20
 
     # Строка 2: Количество мест на ОП
-    c.drawString(col_x_positions[0], y_pos, "Количество мест на ОП")
+    c.drawString(col_x_positions[0], y_pos, "Number of places on OP")
     c.drawString(col_x_positions[1], y_pos, str(pm_places))
     c.drawString(col_x_positions[2], y_pos, str(ivt_places))
     c.drawString(col_x_positions[3], y_pos, str(itss_places))
@@ -353,7 +353,7 @@ def generate_pdf(day, tables_data, cutoff, stats, raw_tables_data, cutoff_histor
     y_pos -= 20
 
     # Строка 3: Кол-во заявлений 1-го приоритета
-    c.drawString(col_x_positions[0], y_pos, "Кол-во заявлений 1-го приоритета")
+    c.drawString(col_x_positions[0], y_pos, "amount of applications 1-st priority")
     c.drawString(col_x_positions[1], y_pos, str(pm1))
     c.drawString(col_x_positions[2], y_pos, str(ivt1))
     c.drawString(col_x_positions[3], y_pos, str(itss1))
@@ -361,7 +361,7 @@ def generate_pdf(day, tables_data, cutoff, stats, raw_tables_data, cutoff_histor
     y_pos -= 20
 
     # Заявлений 2-го приоритета
-    c.drawString(col_x_positions[0], y_pos, "Кол-во заявлений 2-го приоритета")
+    c.drawString(col_x_positions[0], y_pos, "amount of applications 2-st priority")
     c.drawString(col_x_positions[1], y_pos, str(pm2))
     c.drawString(col_x_positions[2], y_pos, str(ivt2))
     c.drawString(col_x_positions[3], y_pos, str(itss2))
@@ -369,7 +369,7 @@ def generate_pdf(day, tables_data, cutoff, stats, raw_tables_data, cutoff_histor
     y_pos -= 20
 
     # Заявлений 3-го приоритета
-    c.drawString(col_x_positions[0], y_pos, "Кол-во заявлений 3-го приоритета")
+    c.drawString(col_x_positions[0], y_pos, "amount of applications 3-st priority")
     c.drawString(col_x_positions[1], y_pos, str(pm3))
     c.drawString(col_x_positions[2], y_pos, str(ivt3))
     c.drawString(col_x_positions[3], y_pos, str(itss3))
@@ -377,7 +377,7 @@ def generate_pdf(day, tables_data, cutoff, stats, raw_tables_data, cutoff_histor
     y_pos -= 20
 
     # Заявлений 4-го приоритета
-    c.drawString(col_x_positions[0], y_pos, "Кол-во заявлений 4-го приоритета")
+    c.drawString(col_x_positions[0], y_pos, "amount of applications 4-st priority")
     c.drawString(col_x_positions[1], y_pos, str(pm4))
     c.drawString(col_x_positions[2], y_pos, str(ivt4))
     c.drawString(col_x_positions[3], y_pos, str(itss4))
@@ -390,48 +390,36 @@ def generate_pdf(day, tables_data, cutoff, stats, raw_tables_data, cutoff_histor
 
     # Заголовок для зачисленных
     c.setFont("Helvetica-Bold", 9)
-    c.drawString(col_x_positions[0], y_pos, "Кол-во зачисленных по приоритетам:")
+    c.drawString(col_x_positions[0], y_pos, "Amount of enrolled by priority:")
     y_pos -= 20
     c.setFont("Helvetica", 9)
 
     # Зачисленные по приоритетам
-    c.drawString(col_x_positions[0], y_pos, "По 1-му приоритету")
+    c.drawString(col_x_positions[0], y_pos, "With 1-st priority")
     c.drawString(col_x_positions[1], y_pos, str(pmpr1))
     c.drawString(col_x_positions[2], y_pos, str(ivtpr1))
     c.drawString(col_x_positions[3], y_pos, str(itsspr1))
     c.drawString(col_x_positions[4], y_pos, str(ibpr1))
     y_pos -= 20
-    c.drawString(col_x_positions[0], y_pos, "По 2-му приоритету")
+    c.drawString(col_x_positions[0], y_pos, "With 2-nd priority")
     c.drawString(col_x_positions[1], y_pos, str(pmpr2))
     c.drawString(col_x_positions[2], y_pos, str(ivtpr2))
     c.drawString(col_x_positions[3], y_pos, str(itsspr2))
     c.drawString(col_x_positions[4], y_pos, str(ibpr2))
     y_pos -= 20
-    c.drawString(col_x_positions[0], y_pos, "По 3-му приоритету")
+    c.drawString(col_x_positions[0], y_pos, "With 3-rd priority")
     c.drawString(col_x_positions[1], y_pos, str(pmpr3))
     c.drawString(col_x_positions[2], y_pos, str(ivtpr3))
     c.drawString(col_x_positions[3], y_pos, str(itsspr3))
     c.drawString(col_x_positions[4], y_pos, str(ibpr3))
     y_pos -= 20
-    c.drawString(col_x_positions[0], y_pos, "По 4-му приоритету")
+    c.drawString(col_x_positions[0], y_pos, "With 4-th priority")
     c.drawString(col_x_positions[1], y_pos, str(pmpr4))
     c.drawString(col_x_positions[2], y_pos, str(ivtpr4))
     c.drawString(col_x_positions[3], y_pos, str(itsspr4))
     c.drawString(col_x_positions[4], y_pos, str(ibpr4))
     y_pos -= 30
 
-    # генерация итоговой таблицы ОТЧЁТА
-    c.setFont("Helvetica-Bold", 12)
-    c.drawString(50, y_pos, "Итоговая статистика:")
-    y_pos -= 15
-    c.setFont("Helvetica", 8)
-
-    # Заголовки
-    headers = ["", "ПМ", "ИВТ", "ИТСС", "ИБ"]
-    x_positions = [50, 120, 180, 240, 300]
-    for i, header in enumerate(headers):
-        c.drawString(x_positions[i], y_pos, header)
-    y_pos -= 12
 
     c.showPage()
     c.save()

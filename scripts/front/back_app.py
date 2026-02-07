@@ -15,10 +15,10 @@ def tables():
     tm.load_day(day)
 
     tm.cursor.execute("""
-        SELECT fio, faculty, specialty, total_points, agreed,
+        SELECT fio, total_points, agreed,
                priority1, priority2, priority3, priority4,
                physics, russian, math, individual
-        FROM students WHERE day=? AND agreed=1
+        FROM students WHERE day=?
     """, (day,))
     rows = tm.cursor.fetchall()
 
@@ -26,18 +26,16 @@ def tables():
     for r in rows:
         tables_data.append({
             "fio": r[0],
-            "faculty": r[1],
-            "specialty": r[2],
-            "total_points": r[3],
-            "agreed": r[4],
-            "priority1": r[5],
-            "priority2": r[6],
-            "priority3": r[7],
-            "priority4": r[8],
-            "physics": r[9],
-            "russian": r[10],
-            "math": r[11],
-            "individual": r[12]
+            "total_points": r[1],
+            "agreed": r[2],
+            "priority1": r[3],
+            "priority2": r[4],
+            "priority3": r[5],
+            "priority4": r[6],
+            "physics": r[7],
+            "russian": r[8],
+            "math": r[9],
+            "individual": r[10]
         })
 
     cutoff = tm.calculate_cutoff()
