@@ -109,6 +109,8 @@ def generate_pdf(day, tables_data, cutoff, stats, raw_tables_data, cutoff_histor
         c.drawString(x_positions[i], y_pos, header)
     y_pos -= 12
 
+    m_y_pos = 60
+
     # Строки таблицы PM
     for row in tables_data:
         spec = row.get("faculty", "")
@@ -122,6 +124,8 @@ def generate_pdf(day, tables_data, cutoff, stats, raw_tables_data, cutoff_histor
             for i, val in enumerate(values):
                 c.drawString(x_positions[i], y_pos, val)
             y_pos -= 12
+        if m_y_pos > y_pos:
+            m_y_pos = y_pos
 
     y_pos = y_save
 
@@ -145,6 +149,8 @@ def generate_pdf(day, tables_data, cutoff, stats, raw_tables_data, cutoff_histor
             for i, val in enumerate(values):
                 c.drawString(x_positions[i], y_pos, val)
             y_pos -= 12
+        if m_y_pos > y_pos:
+            m_y_pos = y_pos
 
     y_pos = y_save
 
@@ -168,6 +174,8 @@ def generate_pdf(day, tables_data, cutoff, stats, raw_tables_data, cutoff_histor
             for i, val in enumerate(values):
                 c.drawString(x_positions[i], y_pos, val)
             y_pos -= 12
+        if m_y_pos > y_pos:
+            m_y_pos = y_pos
 
     y_pos = y_save
 
@@ -191,7 +199,10 @@ def generate_pdf(day, tables_data, cutoff, stats, raw_tables_data, cutoff_histor
             for i, val in enumerate(values):
                 c.drawString(x_positions[i], y_pos, val)
             y_pos -= 12
+        if m_y_pos > y_pos:
+            m_y_pos = y_pos
 
+    y_pos = m_y_pos
     y_pos -= 20
 
     # ПОДСЧЕТ СТАТИСТИКИ - исправленная версия вашего кода
