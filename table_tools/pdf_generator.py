@@ -10,20 +10,16 @@ def generate_pdf(day, tables_data, cutoff, stats, raw_tables_data, cutoff_histor
     c = canvas.Canvas(buffer, pagesize=A4)
     width, height = A4
 
-    # Инициализация переменных для подсчета статистики
-    # Общее количество заявлений по направлениям
     pm = 0  # ПМ
     ivt = 0  # ИВТ
     itss = 0  # ИТСС
     ib = 0  # ИБ
 
-    # Количество мест на ОП (из таблицы в изображении)
     pm_places = 40
     ivt_places = 50
     itss_places = 30
     ib_places = 20
 
-    # Заявлений по приоритетам (первые цифры)
     pm1 = 0
     pm2 = 0
     pm3 = 0
@@ -44,7 +40,6 @@ def generate_pdf(day, tables_data, cutoff, stats, raw_tables_data, cutoff_histor
     ib3 = 0
     ib4 = 0
 
-    # Зачисленные по приоритетам (pr - прошедшие)
     pmpr1 = 0
     pmpr2 = 0
     pmpr3 = 0
@@ -205,7 +200,6 @@ def generate_pdf(day, tables_data, cutoff, stats, raw_tables_data, cutoff_histor
     y_pos = m_y_pos
     y_pos -= 20
 
-
     for raw_table in raw_tables_data:
         # Для приоритета 1
         if raw_table.get("priority1") == 1:
@@ -263,43 +257,126 @@ def generate_pdf(day, tables_data, cutoff, stats, raw_tables_data, cutoff_histor
             ib4 += 1
             ib += 1
 
-    # Подсчет зачисленных
-    for applicant in tables_data:
-        if applicant.get("priority1") == 1:
-            pmpr1 += 1
-        if applicant.get("priority1") == 2:
-            pmpr2 += 1
-        if applicant.get("priority1") == 3:
-            pmpr3 += 1
-        if applicant.get("priority1") == 4:
-            pmpr4 += 1
 
-        if applicant.get("priority2") == 1:
-            ivtpr1 += 1
-        if applicant.get("priority2") == 2:
-            ivtpr2 += 1
-        if applicant.get("priority2") == 3:
-            ivtpr3 += 1
-        if applicant.get("priority2") == 4:
-            ivtpr4 += 1
+    if day >= 4:
 
-        if applicant.get("priority3") == 1:
-            itsspr1 += 1
-        if applicant.get("priority3") == 2:
-            itsspr2 += 1
-        if applicant.get("priority3") == 3:
-            itsspr3 += 1
-        if applicant.get("priority3") == 4:
-            itsspr4 += 1
+        # Для PM
+        if pm1 + pm2 + pm3 + pm4 > 0:
+            pmpr1 = int(pm_places * (pm1 / pm)) if pm > 0 else 0
+            pmpr2 = int(pm_places * (pm2 / pm)) if pm > 0 else 0
+            pmpr3 = int(pm_places * (pm3 / pm)) if pm > 0 else 0
+            pmpr4 = pm_places - (pmpr1 + pmpr2 + pmpr3)  # Остаток
 
-        if applicant.get("priority4") == 1:
-            ibpr1 += 1
-        if applicant.get("priority4") == 2:
-            ibpr2 += 1
-        if applicant.get("priority4") == 3:
-            ibpr3 += 1
-        if applicant.get("priority4") == 4:
-            ibpr4 += 1
+        # Для IVT
+        if ivt1 + ivt2 + ivt3 + ivt4 > 0:
+            ivtpr1 = int(ivt_places * (ivt1 / ivt)) if ivt > 0 else 0
+            ivtpr2 = int(ivt_places * (ivt2 / ivt)) if ivt > 0 else 0
+            ivtpr3 = int(ivt_places * (ivt3 / ivt)) if ivt > 0 else 0
+            ivtpr4 = ivt_places - (ivtpr1 + ivtpr2 + ivtpr3)
+
+        # Для ITSS
+        if itss1 + itss2 + itss3 + itss4 > 0:
+            itsspr1 = int(itss_places * (itss1 / itss)) if itss > 0 else 0
+            itsspr2 = int(itss_places * (itss2 / itss)) if itss > 0 else 0
+            itsspr3 = int(itss_places * (itss3 / itss)) if itss > 0 else 0
+            itsspr4 = itss_places - (itsspr1 + itsspr2 + itsspr3)
+
+        # Для IB
+        if ib1 + ib2 + ib3 + ib4 > 0:
+            ibpr1 = int(ib_places * (ib1 / ib)) if ib > 0 else 0
+            ibpr2 = int(ib_places * (ib2 / ib)) if ib > 0 else 0
+            ibpr3 = int(ib_places * (ib3 / ib)) if ib > 0 else 0
+            ibpr4 = ib_places - (ibpr1 + ibpr2 + ibpr3)
+    else:
+        pm_applicants = []
+        ivt_applicants = []
+        itss_applicants = []
+        ib_applicants = []
+
+        for applicant in tables_data:
+            total_points = applicant.get("total_points", 0)
+            faculty = applicant.get("faculty", "")
+
+
+            priority = None
+            for i in range(1, 5):
+                if applicant.get(f"priority{i}") == 1:
+                    if faculty == "PM": priority = i
+                    break
+                elif applicant.get(f"priority{i}") == 2:
+                    if faculty == "IVT": priority = i
+                    break
+                elif applicant.get(f"priority{i}") == 3:
+                    if faculty == "ITSS": priority = i
+                    break
+                elif applicant.get(f"priority{i}") == 4:
+                    if faculty == "IB": priority = i
+                    break
+
+            if priority and total_points >= cutoff.get(faculty, 0):
+                if faculty == "PM":
+                    pm_applicants.append((total_points, priority, applicant))
+                elif faculty == "IVT":
+                    ivt_applicants.append((total_points, priority, applicant))
+                elif faculty == "ITSS":
+                    itss_applicants.append((total_points, priority, applicant))
+                elif faculty == "IB":
+                    ib_applicants.append((total_points, priority, applicant))
+
+
+        pm_applicants.sort(key=lambda x: (-x[0], x[1]))
+        ivt_applicants.sort(key=lambda x: (-x[0], x[1]))
+        itss_applicants.sort(key=lambda x: (-x[0], x[1]))
+        ib_applicants.sort(key=lambda x: (-x[0], x[1]))
+
+        pm_to_enroll = min(pm_places, len(pm_applicants))
+        ivt_to_enroll = min(ivt_places, len(ivt_applicants))
+        itss_to_enroll = min(itss_places, len(itss_applicants))
+        ib_to_enroll = min(ib_places, len(ib_applicants))
+
+        pm_enrolled = pm_applicants[:pm_to_enroll]
+        ivt_enrolled = ivt_applicants[:ivt_to_enroll]
+        itss_enrolled = itss_applicants[:itss_to_enroll]
+        ib_enrolled = ib_applicants[:ib_to_enroll]
+        for points, priority, applicant in pm_enrolled:
+            if priority == 1:
+                pmpr1 += 1
+            elif priority == 2:
+                pmpr2 += 1
+            elif priority == 3:
+                pmpr3 += 1
+            elif priority == 4:
+                pmpr4 += 1
+
+        for points, priority, applicant in ivt_enrolled:
+            if priority == 1:
+                ivtpr1 += 1
+            elif priority == 2:
+                ivtpr2 += 1
+            elif priority == 3:
+                ivtpr3 += 1
+            elif priority == 4:
+                ivtpr4 += 1
+
+        for points, priority, applicant in itss_enrolled:
+            if priority == 1:
+                itsspr1 += 1
+            elif priority == 2:
+                itsspr2 += 1
+            elif priority == 3:
+                itsspr3 += 1
+            elif priority == 4:
+                itsspr4 += 1
+
+        for points, priority, applicant in ib_enrolled:
+            if priority == 1:
+                ibpr1 += 1
+            elif priority == 2:
+                ibpr2 += 1
+            elif priority == 3:
+                ibpr3 += 1
+            elif priority == 4:
+                ibpr4 += 1
 
     if y_pos < 250:
         c.showPage()
@@ -307,13 +384,9 @@ def generate_pdf(day, tables_data, cutoff, stats, raw_tables_data, cutoff_histor
 
     y_pos -= 30
 
-    # Создание таблицы
     c.setFont("Helvetica", 9)
 
-
     available_width = width - 60
-
-
 
     col1_width = available_width * 0.75
     col_other_width = available_width * 0.0625
@@ -331,7 +404,6 @@ def generate_pdf(day, tables_data, cutoff, stats, raw_tables_data, cutoff_histor
     for i, header in enumerate(headers):
         c.drawString(col_x_positions[i], y_pos, header)
     y_pos -= 15
-
 
     c.line(col_x_positions[0], y_pos, col_x_positions[4] + col_other_width, y_pos)
     y_pos -= 20
@@ -401,25 +473,71 @@ def generate_pdf(day, tables_data, cutoff, stats, raw_tables_data, cutoff_histor
     c.drawString(col_x_positions[3], y_pos, str(itsspr1))
     c.drawString(col_x_positions[4], y_pos, str(ibpr1))
     y_pos -= 20
+
     c.drawString(col_x_positions[0], y_pos, "With 2-nd priority")
     c.drawString(col_x_positions[1], y_pos, str(pmpr2))
     c.drawString(col_x_positions[2], y_pos, str(ivtpr2))
     c.drawString(col_x_positions[3], y_pos, str(itsspr2))
     c.drawString(col_x_positions[4], y_pos, str(ibpr2))
     y_pos -= 20
+
     c.drawString(col_x_positions[0], y_pos, "With 3-rd priority")
     c.drawString(col_x_positions[1], y_pos, str(pmpr3))
     c.drawString(col_x_positions[2], y_pos, str(ivtpr3))
     c.drawString(col_x_positions[3], y_pos, str(itsspr3))
     c.drawString(col_x_positions[4], y_pos, str(ibpr3))
     y_pos -= 20
+
     c.drawString(col_x_positions[0], y_pos, "With 4-th priority")
     c.drawString(col_x_positions[1], y_pos, str(pmpr4))
     c.drawString(col_x_positions[2], y_pos, str(ivtpr4))
     c.drawString(col_x_positions[3], y_pos, str(itsspr4))
     c.drawString(col_x_positions[4], y_pos, str(ibpr4))
-    y_pos -= 30
+    y_pos -= 20
+    c.setFont("Helvetica-Bold", 9)
+    c.drawString(col_x_positions[0], y_pos, "TOTAL enrolled:")
+    total_pm = pmpr1 + pmpr2 + pmpr3 + pmpr4
+    total_ivt = ivtpr1 + ivtpr2 + ivtpr3 + ivtpr4
+    total_itss = itsspr1 + itsspr2 + itsspr3 + itsspr4
+    total_ib = ibpr1 + ibpr2 + ibpr3 + ibpr4
+    c.drawString(col_x_positions[1], y_pos, str(total_pm))
+    c.drawString(col_x_positions[2], y_pos, str(total_ivt))
+    c.drawString(col_x_positions[3], y_pos, str(total_itss))
+    c.drawString(col_x_positions[4], y_pos, str(total_ib))
+    y_pos -= 20
+    c.setFont("Helvetica", 9)
+    c.drawString(col_x_positions[0], y_pos, "Free places:")
+    free_pm = max(0, pm_places - total_pm)
+    free_ivt = max(0, ivt_places - total_ivt)
+    free_itss = max(0, itss_places - total_itss)
+    free_ib = max(0, ib_places - total_ib)
 
+    c.drawString(col_x_positions[1], y_pos, str(free_pm))
+    c.drawString(col_x_positions[2], y_pos, str(free_ivt))
+    c.drawString(col_x_positions[3], y_pos, str(free_itss))
+    c.drawString(col_x_positions[4], y_pos, str(free_ib))
+
+    y_pos -= 20
+
+    # Статус заполнения (без цвета)
+    c.setFont("Helvetica", 9)
+    c.drawString(col_x_positions[0], y_pos, "Status:")
+
+    if day >= 4:
+        status_pm = "FULL" if free_pm == 0 else f"{free_pm} left"
+        status_ivt = "FULL" if free_ivt == 0 else f"{free_ivt} left"
+        status_itss = "FULL" if free_itss == 0 else f"{free_itss} left"
+        status_ib = "FULL" if free_ib == 0 else f"{free_ib} left"
+    else:
+        status_pm = f"{free_pm} free"
+        status_ivt = f"{free_ivt} free"
+        status_itss = f"{free_itss} free"
+        status_ib = f"{free_ib} free"
+
+    c.drawString(col_x_positions[1], y_pos, status_pm)
+    c.drawString(col_x_positions[2], y_pos, status_ivt)
+    c.drawString(col_x_positions[3], y_pos, status_itss)
+    c.drawString(col_x_positions[4], y_pos, status_ib)
 
     c.showPage()
     c.save()
